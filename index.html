@@ -388,19 +388,17 @@ textarea.gap.tlin:focus{border-color:var(--sage-500)}
 .duo .panel .btn{align-self:flex-start;margin-top:auto}
 .fhead{display:flex;align-items:center;gap:10px}
 .fhead h3{font-family:var(--serif);font-weight:500;font-size:20px;color:var(--sage-900)}
-.ficon{width:32px;height:32px;border-radius:4px;display:grid;place-items:center;background:var(--sage-100);color:var(--sage-700);font-size:16px}
 .duo .note{margin:0}
 .mixrow{flex-wrap:wrap}
 .divider{display:flex;align-items:center;gap:14px;margin:34px 0 0;color:var(--muted);font-size:13px}
 .divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}
-.keys{text-align:right;margin-top:8px}
 .badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:6px;background:var(--bad);color:#fff;font-size:10.5px;font-weight:600;margin-left:3px;vertical-align:1px}
 .dlbtn{display:none !important}
 body.can-dl .dlbtn{display:inline-flex !important}
 .levels .dlbtn{margin-left:auto}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--strong);color:var(--on-strong);padding:10px 18px;border-radius:6px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:50}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media (max-width:900px){ .duo{grid-template-columns:1fr} .keys{display:none} .kwin{min-width:160px} }
+@media (max-width:900px){ .duo{grid-template-columns:1fr} .kwin{min-width:160px} }
 .fade{animation:fade .35s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
@@ -598,7 +596,7 @@ a.btn{text-decoration:none}
 .tl figcaption{font-size:14px;color:var(--muted);margin-top:4px}
 /* rule cards */
 .rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:14px 0}
-.rule{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--sage-300);border-radius:4px;padding:12px 14px}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:4px;padding:12px 14px}
 .rule-t{font-weight:600;color:var(--sage-900);font-size:15.5px;margin-bottom:4px}
 .rule-c{font-size:13.5px;color:var(--muted);margin-bottom:8px}
 .rule-c span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--sage-500);font-weight:600}
@@ -610,8 +608,6 @@ a.btn{text-decoration:none}
 .vs-h.a{background:var(--sage-100);color:var(--sage-900)}
 .vs-h.b{background:var(--ok-bg);color:var(--ok-ink)}
 .vs-c{padding:9px 12px;background:var(--surface);border:1px solid var(--line-soft)}
-.vs-c.a{border-left:3px solid var(--sage-300)}
-.vs-c.b{border-left:3px solid var(--ok-line)}
 .vs-mid{display:grid;place-items:center;color:var(--sage-500);font-weight:600}
 .vs-mid.h{font-size:11px;text-transform:uppercase;letter-spacing:.08em}
 /* glossary */
@@ -4143,9 +4139,8 @@ function renderOverview(){
   $('#main').innerHTML = `<div class="fade">
     ${pr ? '' : introHTML()}
     <div class="hero-row"><div>
-    <div class="eyebrow">${pr?'Практика':'Теория'}</div>
     <${pr?'h1':'h2 class="h1like"'}>${pr?'Выберите тему для практики':'Все темы'}</${pr?'h1':'h2'}>
-    <p class="lead">${pr?'В каждой теме есть задания с объяснениями. Результаты сохраняются в этом браузере.':'Откройте любую тему, чтобы прочитать правила, примеры и разбор типичных ошибок.'}</p>
+    ${pr?'<p class="lead">Результаты сохраняются в этом браузере.</p>':''}
     </div><div class="hero-art">${mascot(pr?'read':'teach','m-hero')}</div></div>
 
     <div class="filterbox">
@@ -4172,7 +4167,7 @@ function renderOverview(){
 
     <div class="cta">
       <div><h3>Свой тест</h3><p>Соберите тест из любых тем и уровней, от 5 до 50 вопросов, с итогами в конце</p></div>
-      <button class="btn light" id="toTest">Создать тест →</button>
+      <button class="btn light" id="toTest">Создать тест</button>
     </div>
   </div>`;
   const s = $('#search'); s.value = ov.q;
@@ -4221,19 +4216,18 @@ function renderTheory(t){
   const idx = THEMES.indexOf(t);
   const prev = THEMES[idx-1], next = THEMES[idx+1];
   $('#main').innerHTML = `<div class="fade">
-    <button class="back" id="back">← Все темы</button>
-    <div class="eyebrow">Теория</div>
+    <button class="back" id="back">Все темы</button>
     <h1>${t.title}</h1>
     <p class="lead">${t.lead}</p>
     <div class="levels">${t.levels.map(lvlPill).join('')}<button class="chip link dlbtn" id="dlSheet">⤓ Шпаргалка для печати</button></div>
     ${t.sections.map((s,k)=>`<section class="section"><h2>${s.h} ${lvlPill(s.lvl)}</h2>${timelineFor(t,k)}${s.html}${miniHTML(t,k)}</section>`).join('')}
     <div class="cta">
       <div><h3>Проверьте себя</h3><p>${ruN(gq(t).length,'задание','задания','заданий')} по теме «${t.ru.toLowerCase()}» с объяснениями</p></div>
-      <button class="btn light" id="toPractice">Перейти к практике →</button>
+      <button class="btn light" id="toPractice">Перейти к практике</button>
     </div>
     <div class="pager">
-      ${prev?`<button class="pg" data-t="${prev.id}"><span>← Предыдущая</span>${prev.title}</button>`:'<span></span>'}
-      ${next?`<button class="pg r" data-t="${next.id}"><span>Следующая →</span>${next.title}</button>`:'<span></span>'}
+      ${prev?`<button class="pg" data-t="${prev.id}"><span>Предыдущая</span>${prev.title}</button>`:'<span></span>'}
+      ${next?`<button class="pg r" data-t="${next.id}"><span>Следующая</span>${next.title}</button>`:'<span></span>'}
     </div>
   </div>`;
   $('#back').onclick = ()=>go(undefined,null);
@@ -4258,10 +4252,8 @@ function renderPractice(t){
   const list = t.quiz.map((q,i)=>({...q,i})).filter(q=>levelFilter==='all' || q.l===levelFilter);
   const nextT = THEMES[(THEMES.indexOf(t)+1) % THEMES.length];
   $('#main').innerHTML = `<div class="fade">
-    <button class="back" id="back">← Все темы</button>
-    <div class="eyebrow">Практика · ${t.ru}</div>
+    <button class="back" id="back">Все темы</button>
     <h1>${t.title}</h1>
-    <p class="lead">Выберите ответ или впишите форму глагола. После каждого ответа появится объяснение.</p>
     <div class="score">
       <div><div class="num" id="sc"></div><div class="lbl">правильных ответов</div></div>
       <div class="track"><i class="g" id="tg"></i><i class="r" id="tr"></i></div>
@@ -4282,7 +4274,7 @@ function renderPractice(t){
       <div class="row">
         <button class="btn ghost" id="again">Пройти ещё раз</button>
         <button class="btn ghost" id="redoWrong"></button>
-        <button class="btn solid" id="next">Следующая тема: ${nextT.title} →</button>
+        <button class="btn solid" id="next">Следующая тема: ${nextT.title}</button>
       </div>
     </div>
   </div>`;
@@ -4345,7 +4337,7 @@ function ctxHTML(t,id){
       <button class="btn ghost stop">■ Стоп</button>
       <label class="rate">Скорость <select><option value="0.8">0.8×</option><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.1">1.1×</option></select></label>
     </div>
-    <p class="note tts-msg">Сначала прочитайте вопросы ниже. В экзамене запись звучит один раз. Озвучка синтезированная, голоса зависят от браузера.</p>
+    <p class="note tts-msg">Сначала прочитайте вопросы ниже. В экзамене запись звучит один раз.</p>
     <details class="script"><summary>Показать текст записи (после ответов)</summary>
       <div>${c.lines.map(l=>`<p><b>${l.v==='W'?'Woman':l.v==='M'?'Man':l.n||'Speaker'}:</b> ${esc(l.t)}</p>`).join('')}</div>
     </details></div>`;
@@ -4355,7 +4347,7 @@ function writeHTML(t,q){
   return `<div class="task" data-k="${q.i}">
     <div class="qhead"><span class="qnum">${q.title}</span><span class="qtype">${q.min}+ слов · ${q.time} мин · ${lvlPill(q.l)}</span></div>
     <div class="prompt">${q.prompt}</div>
-    <textarea class="wbox" spellcheck="false" placeholder="Напишите ответ здесь. Черновик сохраняется в этом браузере.">${esc(txt)}</textarea>
+    <textarea class="wbox" spellcheck="false" placeholder="Черновик сохраняется в этом браузере.">${esc(txt)}</textarea>
     <div class="tbar"><span class="wc"></span><button class="btn ghost timer" data-s="${q.time*60}" data-label="Таймер"></button></div>
     <div class="tbtns"><button class="chip tg" data-x="check">Критерии самопроверки</button><button class="chip tg" data-x="model">Образец ответа${q.band?' · '+q.band:''}</button></div>
     <div class="xpanel check">${q.check.map(c=>`<label class="ck"><input type="checkbox"><span>${c}</span></label>`).join('')}</div>
@@ -4396,9 +4388,9 @@ function qHTML(q,n,key,extra=''){
   const btn = `<div class="qactions"><button class="btn solid check">${extra?'Ответить':'Проверить'}</button></div>`;
   const inp = cls => `<input class="gap ${cls||''}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="ответ">`;
   let body, type;
-  if(q.t==='gap'){ type='Впишите ответ';
+  if(q.t==='gap'){ type='';
     body = `<div class="qtext">${esc(q.q).replace('___', inp())}</div>${q.hint?`<div class="hint">${esc(q.hint)}</div>`:''}${btn}`; }
-  else if(q.t==='mc'){ type='Выберите ответ';
+  else if(q.t==='mc'){ type='';
     body = `<div class="qtext">${esc(q.q).split('___').join('<b class="blank">____</b>')}</div>
        <div class="opts">${q.o.map((o,k)=>`<button class="opt" data-o="${k}"><span class="okey">${k+1}</span>${esc(o)}</button>`).join('')}</div>`; }
   else if(q.t==='kw'){ type='Трансформация'+(q.ex?' · '+q.ex:'');
@@ -4409,7 +4401,7 @@ function qHTML(q,n,key,extra=''){
   else { type='Переведите на английский';
     body = `<div class="qtext rusrc">${esc(q.ru)}</div><textarea class="gap tlin" rows="2" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ваш перевод…" aria-label="перевод"></textarea>${btn}`; }
   return `<div class="q" data-k="${key}">
-    <div class="qhead"><span class="qnum">${extra || 'Задание '+(n+1)}</span><span class="qtype">${type} · ${lvlPill(q.l)}</span></div>
+    <div class="qhead"><span class="qnum">${extra || 'Задание '+(n+1)}</span><span class="qtype">${type?type+' ':''}${lvlPill(q.l)}</span></div>
     ${body}<div class="fb"></div></div>`;
 }
 
@@ -4465,7 +4457,7 @@ function update(t){
     $('#doneArt').innerHTML = pct>=.6 ? mascot('cheer','m-done') : mascot('read','m-done');
     $('#doneTitle').textContent = pct>=.9 ? 'Отлично!' : pct>=.6 ? 'Хороший результат' : 'Стоит повторить теорию';
     const rb=$('#redoWrong'), nw=g.filter(x=>r[x.i]===false && !x.q.ctx).length; if(rb){ rb.style.display=nw?'':'none'; rb.textContent=`Повторить ошибки (${nw})`; }
-    $('#doneText').textContent = `Вы ответили правильно на ${correct} из ${g.length}. ` + (pct<.6 ? 'Перечитайте разделы с ошибками и попробуйте снова.' : 'Можно переходить к следующей теме.');
+    $('#doneText').textContent = (pct<.6 ? 'Перечитайте разделы с ошибками и попробуйте снова.' : 'Можно переходить к следующей теме.');
   }
   renderSide();
 }
@@ -4479,19 +4471,17 @@ function poolSize(){ return THEMES.filter(t=>builder.themes.has(t.id)).reduce((s
 function renderBuilder(){
   $('#main').innerHTML = `<div class="fade">
     <div class="hero-row"><div>
-    <div class="eyebrow">Свой тест</div>
     <h1>Соберите тест</h1>
-    <p class="lead">Повторите ошибки, пройдите рекомендуемый микс или соберите свой тест из любых тем и уровней.</p>
     </div><div class="hero-art">${mascot('teach','m-hero')}</div></div>
 
     <div class="duo">
       <div class="panel feature">
-        <div class="fhead"><span class="ficon">↻</span><h3>Повторение ошибок</h3></div>
+        <div class="fhead"><h3>Повторение ошибок</h3></div>
         <p class="note" id="srsText"></p>
         <button class="btn solid" id="startReview">Повторить</button>
       </div>
       <div class="panel feature">
-        <div class="fhead"><span class="ficon">✦</span><h3>Рекомендуемый микс</h3></div>
+        <div class="fhead"><h3>Рекомендуемый микс</h3></div>
         <p class="note" id="mixText"></p>
         <div class="row-s mixrow"><span class="note">Вопросов:</span><button class="chip ${mixN===10?'on':''}" data-mix="10">10</button><button class="chip ${mixN===20?'on':''}" data-mix="20">20</button><button class="chip ${mixN===30?'on':''}" data-mix="30">30</button></div>
         <button class="btn solid" id="startMix">Начать микс</button>
@@ -4520,8 +4510,8 @@ function renderBuilder(){
       <p class="note" id="note"></p>
     </div>
 
-    <div class="startrow"><span class="note" id="sumline"></span><button class="btn ghost dlbtn" id="dlTest">⤓ Тест для печати</button><button class="btn solid big" id="start">Начать тест</button></div>
-    <p class="note keys">Клавиши в тесте: 1–4 выбирают ответ, Enter переходит дальше.</p>
+    <div class="startrow"><button class="btn ghost dlbtn" id="dlTest">⤓ Тест для печати</button><button class="btn solid big" id="start">Начать тест</button></div>
+
   </div>`;
   document.querySelectorAll('.lp').forEach(b=>b.onclick=()=>{ const l=b.dataset.l; builder.levels.has(l)?builder.levels.delete(l):builder.levels.add(l); refresh(); });
   document.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>{ builder.levels=new Set(b.dataset.preset.split(',')); refresh(); });
@@ -4539,7 +4529,7 @@ function renderBuilder(){
   $('#startReview').onclick = ()=>startTestWith(shuffle(due).slice(0,20), 'review');
   const practised = practisedThemes();
   $('#mixText').textContent = practised.length
-    ? `Вопросы из тем, которые вы уже проходили (${practised.length}), с упором на слабые места, плюс ошибки к повторению. Хорошо подходит для ежедневной разминки.`
+    ? `Вопросы из тем, которые вы уже проходили (${practised.length}), с упором на слабые места, плюс ошибки к повторению.`
     : 'Вы ещё не проходили практику, поэтому микс соберётся из всех тем. После практики он будет подстраиваться под ваши слабые места.';
   document.querySelectorAll('[data-mix]').forEach(b=>b.onclick=()=>{ mixN=+b.dataset.mix; document.querySelectorAll('[data-mix]').forEach(x=>x.classList.toggle('on',x===b)); });
   $('#startMix').onclick = ()=>startTestWith(buildMix(mixN), 'mix');
@@ -4598,7 +4588,6 @@ function refresh(){
     : !pool ? 'В выбранных темах нет вопросов этого уровня.'
     : builder.count > pool ? `Подходящих вопросов всего ${pool}, поэтому в тесте будет ${pool}. Добавьте темы или уровни, чтобы получить больше.`
     : `В тесте ${n} вопросов из ${pool} подходящих.`;
-  $('#sumline').textContent = pool ? `${builder.themes.size} ${builder.themes.size===1?'тема':builder.themes.size<5?'темы':'тем'} · ${[...builder.levels].sort().join(', ')} · ${n} вопр.` : '';
   $('#start').disabled = pool < 1;
 }
 
@@ -4631,8 +4620,8 @@ function renderTest(){
     <div class="track thin"><i class="g" style="width:${test.pos/total*100}%"></i></div>
     ${qHTML(q,0,'t',byId(it.tid).title)}
     <div class="testnav">
-      <span class="note">Ответ можно изменить, пока не нажата кнопка «Далее». Клавиши: 1–4, Enter.</span>
-      <button class="btn solid" id="nextq" disabled>${test.pos+1===total?'Завершить тест':'Далее →'}</button>
+      <span class="note">Клавиши: 1–4, Enter.</span>
+      <button class="btn solid" id="nextq" disabled>${test.pos+1===total?'Завершить тест':'Далее'}</button>
     </div>
   </div>`;
   const card = document.querySelector('.q'); const nb = $('#nextq');
@@ -4679,7 +4668,6 @@ function renderSummary(){
       <div class="ring" style="--p:${pct}"><div><b>${pct}%</b><span>${correct} из ${total}</span></div></div>
       <div class="sum-art">${pct>=75?mascot('cheer','m-sum'):mascot('read','m-sum')}</div>
       <div class="sumtxt">
-        <p>Вы ответили правильно на <b>${correct}</b> из <b>${total}</b> вопросов по ${Object.keys(per).length} ${plural(Object.keys(per).length,'теме','темам','темам')}.</p>
         ${weak.length ? `<p>Стоит повторить: ${weak.map(t=>`<button class="tlink" data-t="${t.id}">${t.title}</button>`).join(', ')}.</p>` : '<p>Во всех темах больше 70% правильных ответов.</p>'}
       </div>
     </div>
@@ -4864,9 +4852,8 @@ function enhanceTables(root){
 function introHTML(){
   const TG='https://t.me/english_with_pasha';
   return `<section class="intro">
-    <div class="eyebrow">English with Pasha</div>
     <h1>Сайт для самостоятельного изучения английского</h1>
-    <p class="lead">Теория с понятными примерами, практика с объяснениями, тесты и подготовка к IELTS. Для уровней от B1 до C2, бесплатно и в своём темпе.</p>
+    <p class="lead">Теория, практика с объяснениями, тесты и подготовка к IELTS для уровней B1–C2. Бесплатно.</p>
     <div class="creator">
       <h3 class="creator-h">Об авторе</h3>
       <p class="creator-t">Меня зовут Паша, я репетитор английского и сделал этот сайт для своих учеников. Если захотите заниматься индивидуально, пишите.</p>
